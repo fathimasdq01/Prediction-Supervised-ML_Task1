@@ -1,0 +1,107 @@
+---
+title: "Predicting Scores using Supervised ML"
+author: "Fathima Sadique"
+output: html_document
+---
+
+# 
+
+#### *Aim* : To predict the percentage of a student based on their number of study hours using the following dataset.
+
+#  
+
+#### *Dataset :*
+```{r}
+library(huxtable) #To format it into a table
+d1 <- hux(
+  No_of_hours = c(2.5,5.1,3.2,8.5,3.5,1.5,9.2,5.5,8.3,2.7,7.7,5.9,4.5,3.3,1.1,8.9,2.5,1.9,6.1,7.4,2.7,4.8,3.8,6.9,7.8),
+  Score_obtained = c(21,47,27,75,30,20,88,60,81,25,85,62,41,42,17,95,30,24,67,69,30,54,35,76,86),
+  add_colnames = TRUE)
+
+bold(d1)[1,]           <- TRUE
+bottom_border(d1)[1,]  <- 0.4
+align(d1)[,2]          <- 'right'
+right_padding(d1)      <- 10
+left_padding(d1)       <- 10
+width(d1)              <- 0.5
+number_format(d1)      <- 2
+
+print(d1)
+```
+
+The above dataset contains 2 fields, number of hours which is the number of hours spent in studying per day by students and thier respective scores. On performing regression analysis on this data we will be able to produce a predictive model.
+
+#  
+
+#### *Calculation :*
+
+Save the above fields as independent (x) and dependent (y) variables:
+```{r}
+#Study hours:
+x<-c(2.5,5.1,3.2,8.5,3.5,1.5,9.2,5.5,8.3,2.7,7.7,5.9,4.5,3.3,1.1,8.9,2.5,1.9,6.1,7.4,2.7,4.8,3.8,6.9,7.8)
+#Scores:
+y<-c(21,47,27,75,30,20,88,60,81,25,85,62,41,42,17,95,30,24,67,69,30,54,35,76,86)
+```
+
+
+To get the relationship model we use the linear regression formula:-
+```{r}
+relation<-lm(y~x)
+print(relation)
+```
+
+Linear regression follows the formula y = a + bx where y is the response varible, x is the predictor variable and a and b are constants. From the above relationship we have our 'a' value as the intercept (2.484) and 'b' value as the co-efficient (9.776).
+
+
+A detailed summary of the relationship can be seen below:
+```{r}
+summary(relation)
+```
+
+#  
+
+#### *Model Accuracy :*
+The model accuracy can be assessed using the following three quantites obtained from the above summary:
+
+* Residual standard error : In our problem, RSE = 5.603, meaning that the observed sales values deviate from the true regression line by approximately 5.6 units in average.
+* R-squared : Since our R-squared value (0.9509) is close to 1, it indicates that a large proportion of the variability in the outcome has been explained by the regression model.
+* F-statistic : A large F-statistic will corresponds to a statistically significant p-value (p < 0.05). Our F-statistic produces a p-value <2.2e-16, which is highly significant as it is much less than 0.05.
+
+#  
+
+#### *Making Predictions (use the linear regression formula y=a+bx) :*
+```{r}
+pred<-2.484 + (9.776*x)
+
+d2 <- hux(
+  Actual_score = y,
+  Predicted_score = pred,
+  add_colnames = TRUE)
+
+bold(d2)[1,]           <- TRUE
+bottom_border(d2)[1,]  <- 0.4
+align(d2)[,2]          <- 'right'
+right_padding(d2)      <- 10
+left_padding(d2)       <- 10
+width(d2)              <- 0.5
+number_format(d2)      <- 2
+
+print(d2)
+```
+
+#  
+
+#### *Visulaization of the regression model graphically :*
+```{r}
+plot(y,x,col = "blue", abline(lm(x~y)),cex = 1.3,pch = 16, main="No. of hours and score regression",xlab = "Score obtained",ylab = "Time studied (in hours)")
+```
+
+#  
+
+#### *Predicted score if a student studies for 9.25 hours per day:*
+```{r}
+hrs<-data.frame(x=9.25)
+score<-predict(relation,hrs)
+print(score)
+``` 
+Therefore, from the above model, we see that if a student studies for 9.25 hours a day, he or she is bound to have a predictive score of **92.91** 
